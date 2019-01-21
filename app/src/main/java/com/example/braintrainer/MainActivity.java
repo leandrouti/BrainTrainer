@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateResultTextView(boolean isCorrect) {
         ((TextView) findViewById(R.id.resultTextView)).setText(isCorrect ? "Correct" : "Incorrect");
+        this.updateAnswers();
     }
 
     private void updateTime(int seconds) {
@@ -73,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
             btn.setText(String.valueOf(this.answers.get(i)));
             btn.setTag(String.valueOf(this.answers.get(i)));
         }
-
     }
 
     @Override
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.startButton = (Button) findViewById(R.id.startButton);
 
+        (findViewById(R.id.tableLayout)).setVisibility(View.INVISIBLE);
+        (findViewById(R.id.sumTextView)).setVisibility(View.INVISIBLE);
 
         this.generateAnswers();
     }
@@ -89,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
     public void start(View v) {
         Log.i("start", "clicked");
         this.startButton.setVisibility(View.INVISIBLE);
+        (findViewById(R.id.tableLayout)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.sumTextView)).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.resultTextView)).setText("");
+
+        this.totalAnswers = 1;
+        this.totalCorrect = 0;
+        this.updateAnswers();
 
         this.cntDownTimer = new CountDownTimer(30000, 1000) {
             @Override
@@ -98,7 +108,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                (findViewById(R.id.tableLayout)).setVisibility(View.INVISIBLE);
+                (findViewById(R.id.sumTextView)).setVisibility(View.INVISIBLE);
 
+                startButton.setVisibility(View.VISIBLE);
             }
         }.start();
 
@@ -115,6 +128,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             this.updateResultTextView(false);
         }
-
+        this.generateAnswers();
     }
 }
